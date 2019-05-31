@@ -1,4 +1,15 @@
 <?php
+    // Database vars
+    define("DB_HOST", "localhost");
+
+    define("DB_PORT", "3036");
+
+    define("DB_NAME", "camagru");
+
+    define("DB_USER", "root");
+
+    define("DB_PWD", "tiger");
+
 
     define("DS", DIRECTORY_SEPARATOR);
 
@@ -11,7 +22,6 @@
     define("FRAMEWORK_PATH", ROOT . "framework" . DS);
 
     define("PUBLIC_PATH", ROOT . "public" . DS);
-
 
     define("CONFIG_PATH", APP_PATH . "config" . DS);
 

@@ -1,6 +1,6 @@
 <?php
 class Core {
-    protected   $currentController = 'GalleryController';
+    protected   $currentController = 'LoginController';
     protected   $currentMethod = 'index';
     protected   $params = [];
 
