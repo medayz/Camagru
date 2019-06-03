@@ -1,9 +1,14 @@
+html, body {
+    height: 100% !important;
+    padding: 0px !important;
+    margin: 0px !important;
+}
+
 body {
     font-family: Futura, Helvetica, sans-serif;
-    color: #DFF8EB;
-    background-color: #2D3047;
-    text-align: center;
-    margin: 100px auto;
+    color: #333;
+    /*background-color: #2D3047;*/
+    /*background-color: #DFF8EB;*/
 }
 
 input:focus,
@@ -24,7 +29,7 @@ button:focus {
     -moz-appearance: none;
     border: 0px;
     border-bottom: 2px solid #F7F052;
-    background-color: #25283B; 
+    background-color: #25283B;
     color: #F8FA90;
     border-radius: 4px;
 }
@@ -36,10 +41,9 @@ button:focus {
 
 #container {
     width: 500px;
-    height: 300px;
-    padding: 20px;
+    height: 400px;
     position: absolute;
-    top:0;
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
@@ -66,7 +70,6 @@ h1:hover {
     color: #F7F052;
     -webkit-appearance: none;
     background-color: transparent;
-    border: 0px;
     border: 1px solid #F7F052;
     width: 120px;
     padding: 10px;
@@ -85,40 +88,152 @@ h1:hover {
 }
 
 img#logo {
-    width: 200px;
+    width: 160px;
+    position: relative;
+    margin: 20px auto;
+}
+
+img#logo_nav {
+    width: 160px;
+    position: relative;
+    margin: 10px;
+    display: inline;
+}
+
+div#footer {
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: 0px auto;
+    padding-bottom: 20px;
+    text-align: center;
+    line-height: 30px;
+}
+
+div#flex-container {
+    position: relative;
+    width: 1330px;
+    margin: 0px auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    line-height: 30px;
+    font-size: 12pt;
+    border-radius: 4px;
+}
+
+div#flex-container > div {
+    width: 33%;
+}
+
+div#watermark img {
+    position: relative;
+    width: 120px;
+
 }
 
 div.main {
-    width: 96%;
-    top: 160px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    content: contain;
-    position: absolute;
-    text-align: center;
-    overflow: auto;
+    position: relative;
+    width: 100%;
+    top: 40px;
+    margin: 0px 0px 40px 0px;
+    padding: 40px 0px 20px 0px;
     display: block;
+    background-color: #DFF8EB;
+    /*border-radius: 8px;*/
 }
 
 div.pics {
-    position: absolute;
-    overflow: hidden;
-    width: 1000px;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
+    background-color: #DFF8EB;
+    padding: 20px;
+    width: 1330px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    position: relative;
+    margin: 0px auto;
+    display: grid;
+    justify-items: center;
+    grid-gap: 10px;
+    grid-row-gap: 10px;
+    border-radius: 8px;
 }
 
 div.pic {
-    background-color: #DFF8EB;
-    float: left;
-    width: 300px;
+    padding: 0px;
+    /*background-color: #DFF8EB;*/
+    width: 100%;
     height: 300px;
-    margin: 10px;
     border-radius: 4px;
+    overflow: hidden;
     position: relative;
+    /*margin: 10px;*/
+}
+
+div.pic img {
+    margin: 0px;
+    position: relative;
+    /*top: 5%;*/
+    /*left: 50%;*/
+    /*transform: translate(-50%, -50%);*/
+    width: 100%;
+}
+
+@media screen and (max-width: 1450px) {
+    div.pics, div#flex-container {
+        width: 960px;
+    }
+}
+
+@media screen and (max-width: 1050px) {
+    div.pics, div#flex-container {
+        width: 650px;
+    }
+}
+@media screen and (max-width: 740px) {
+    div.pics {
+        /*grid-template-columns: 1fr;*/
+        width: 350px;
+        grid-row-gap: 20px;
+    }
+    div#footer {
+        height: 200px !important;
+        width: 100%;
+    }
+    div#flex-container {
+        height: 200px !important;
+        width: 350px;
+    }
+
+    div#flex-container > div {
+        width: 100%;
+        text-align: center;
+        line-height: 63px;
+        background-color: #CBE2D6;
+    }
+    div#watermark {
+        background-color: #DFF8EB !important;
+        -moz-box-shadow:    inset 0 0 20px #CBE2D6;
+        -webkit-box-shadow: inset 0 0 20px #CBE2D6;
+        box-shadow:         inset 0 0 20px #CBE2D6;
+    }
+
+    div#flex-container > div {
+        vertical-align: middle;
+    }
+
+    div#watermark img {
+        top: 50%;
+        transform: translateY(-50%);
+        width: 200px;
+    }
+
+    div.main {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    div.pics, div#flex-container {
+        width: 90%;
+    }
 }
