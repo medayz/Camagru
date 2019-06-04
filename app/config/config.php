@@ -1,8 +1,8 @@
 <?php
     // Database vars
-    define("DB_HOST", "localhost");
+    define("DB_HOST", "mysql");
 
-    define("DB_PORT", "3036");
+    define("DB_PORT", "3306");
 
     define("DB_NAME", "camagru");
 
