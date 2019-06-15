@@ -1,8 +1,6 @@
 <?php
 class Database {
-    private $host = DB_HOST;
-    private $port = DB_PORT;
-    private $name = DB_NAME;
+    private $dsn = DB_DSN;
     private $user = DB_USER;
     private $pwd = DB_PWD;
 
@@ -11,14 +9,13 @@ class Database {
     private $error;
 
     public  function __construct() {
-        $dsn = 'mysql:host='. $this->host . ';port=' . $this->port . ';dbname=' . $this->name;
         $options = array(
             PDO::ATTR_PERSISTENT => true,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         );
 
         try {
-            $this->dbh = new PDO($dsn, $this->user, $this->pwd, $options);
+            $this->dbh = new PDO($this->dsn, $this->user, $this->pwd, $options);
         } catch (PDOException $exception) {
             $this->error = $exception->getMessage();
             echo $this->error;

@@ -1,14 +1,4 @@
 <?php
-    // Database vars
-    define("DB_HOST", "mysql");
-
-    define("DB_PORT", "3306");
-
-    define("DB_NAME", "camagru");
-
-    define("DB_USER", "root");
-
-    define("DB_PWD", "tiger");
 
 
     define("DS", DIRECTORY_SEPARATOR);
