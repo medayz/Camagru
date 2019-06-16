@@ -22,6 +22,12 @@
                 echo json_encode($this->getPics());
             }
         }
+        public function deletePic() {
+            $pic = $_POST['pic'];
+            if ($this->picturesModel->removeImg($pic)) {
+                echo json_encode($this->getPics());
+            }
+        }
 
         public function index() {
             if (!empty($_SESSION['user'])) {

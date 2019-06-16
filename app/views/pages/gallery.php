@@ -10,11 +10,22 @@
                 ?>
 			</div>
 		</div>
-<div id="footer" style="color: #B7CBC1; background-color: #DFF8EB;">
-    <div id="flex-container">
-        <div><span id="school">1337 School</span></div>
-        <div id="watermark"><img src="<?php echo URL_ROOT; ?>img/watermark.png"></div>
-        <div><span id="copyrights"">&copy; Camagru mzahir 2019</span></div>
-    </div>
-</div>
+        <div id="show-post">
+            <div id="cancel"></div>
+            <div id="post">
+                <div id="post-img"></div>
+                <div id="comment-div">
+                    <div id="new-comment" class="comment">
+                        <input id="com-inp" type="text" placeholder="comment this pic...">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="footer" style="color: #B7CBC1; background-color: #DFF8EB;">
+            <div id="flex-container">
+                <div><span id="school">1337 School</span></div>
+                <div id="watermark"><img src="<?php echo URL_ROOT; ?>img/watermark.png"></div>
+                <div><span id="copyrights"">&copy; Camagru mzahir 2019</span></div>
+            </div>
+        </div>
 <?php require APP_PATH . 'views/includes/footer.php'; ?>

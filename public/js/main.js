@@ -153,7 +153,8 @@ function loadLikes() {
 
 var like_btns = document.querySelectorAll(".like");
 like_btns.forEach(function (btn) {
-    btn.addEventListener('click', function () {
+    btn.addEventListener('click', function (ev) {
+        ev.stopImmediatePropagation();
         let pic_name = this.parentElement.parentElement.previousElementSibling.src.split('/').pop();
 
         let xhr = new XMLHttpRequest();
@@ -182,4 +183,125 @@ like_btns.forEach(function (btn) {
 });
 
 loadLikes();
+
+
+/***************
+**  NEW_COMMENT
+***************/
+
+function loadComments(pic) {
+    let new_com = document.createElement("div");
+    new_com.id = "new-comment";
+    new_com.className = "comment";
+    new_com.innerHTML = "<input id=\"com-inp\" type=\"text\" placeholder=\"comment this pic...\">";
+    new_com.firstElementChild.addEventListener('keyup', function (ev) {
+        addComment(ev, this.value);
+    });
+
+    let com_div = document.getElementById("comment-div");
+    com_div.innerHTML = "";
+    com_div.appendChild(new_com);
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", 'gallery/getComments', true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            let comments = JSON.parse(this.responseText);
+            comments.forEach(function (com) {
+                let com_elem = document.createElement("div");
+                com_elem.className = "comment";
+                com_elem.innerHTML = "<span class=\"user\">" + com.username + "</span><br><span class=\"body\">" + com.content + "</span>";
+                com_div.appendChild(com_elem);
+            });
+        }
+    };
+    xhr.send("pic=" + pic);
+}
+
+var comment = document.getElementById("new-comment") ? document.getElementById("new-comment").firstElementChild : null;
+
+ function addComment(ev, new_com) {
+    if (ev.keyCode === 13 && !ev.shiftKey) {
+        console.log("hey fucker!");
+        let text = encodeURIComponent(new_com);
+        let url = window.getComputedStyle(document.getElementById("post-img")).backgroundImage.match("(?<=\\(\")(.*?)(?=\"\\))").shift();
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", 'gallery/submitComment', true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                // let new_com = JSON.parse(this.responseText);
+                loadComments(url.split('/').pop());
+            }
+        };
+        let comm = {
+            text: text,
+            pic: url.split('/').pop()
+        };
+        console.log(comm);
+        xhr.send("comment=" + JSON.stringify(comm));
+    }
+}
+
+if (comment) {
+    comment.addEventListener('keyup', function (ev) {
+        addComment(ev, this.value);
+    });
+}
+function wheel_event(ev) {
+    ev.preventDefault();
+}
+function disable_scroll() {
+    if (window.addEventListener) {
+        window.addEventListener('DOMMouseScroll', wheel_event, false);
+    }
+}
+function enable_scroll() {
+    if (window.removeEventListener) {
+        window.removeEventListener('DOMMouseScroll', wheel_event, false);
+    }
+}
+ 
+ var all_pics = document.querySelectorAll(".gallery");
+ all_pics.forEach(function (pic) {
+     pic.addEventListener('click', function () {
+         let show_post = document.getElementById("show-post");
+         show_post.style.display = "block";
+         show_post.lastElementChild.firstElementChild.style.backgroundImage = "url(\"" + this.firstElementChild.src + "\")";
+         loadComments(this.firstElementChild.src.split('/').pop());
+     });
+ });
+ if (document.getElementById("cancel")) {
+     document.getElementById("cancel").addEventListener('click', function () {
+         let show_post = document.getElementById("show-post");
+         show_post.style.display = "none";
+     });
+ }
+ window.addEventListener('keyup', function (ev) {
+     if (ev.key == "Escape") {
+         let show_post = document.getElementById("show-post");
+         show_post.style.display = "none";
+     }
+});
+ var delete_btns = document.querySelectorAll(".delete");
+ delete_btns.forEach(btn => {
+     btn.addEventListener('click', function () {
+         let xhr = new XMLHttpRequest();
+         xhr.open("POST", 'home/deletePic', true);
+         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+         xhr.onreadystatechange = function() {
+             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                 // console.log(this.responseText);
+                 let pics = JSON.parse(this.responseText);
+                 let pics_html = "";
+                 pics.forEach(function(path) {
+                     pics_html += '<div class="pic"><img class="img" src="http://localhost/camagru/img/Users_pics/' + decodeURIComponent(path) + '"><div class="delete"></div></div>';
+                 });
+                 pics_div.innerHTML = pics_html;
+             }
+         };
+         xhr.send("pic=" + this.parentElement.firstElementChild.src.split('/').pop());
+     });
+ });
+
 

@@ -24,7 +24,7 @@
             <feFlood flood-color="white" />
             <feComposite in2="SourceAlpha" operator="in" />
         </filter>
-    </svgstyle>
+    </svg>
     <div id="grid-container">
         <div id="camera">
 <!--            <input type="file" accept="image/*;capture=camera">-->
@@ -38,7 +38,7 @@
 <!--            <div class="pic"><img filter="url(#svgBlur)" style="width: 300px;" src="--><?php //echo URL_ROOT; ?><!--img/pic.png"></div>-->
             <?php
             foreach ($data['pics'] as $name) {
-                echo '<div class="pic"><img class="img" src="' . URL_ROOT . 'img/Users_pics/' . $name . '"></div>';
+                echo '<div class="pic"><img class="img" src="' . URL_ROOT . 'img/Users_pics/' . $name . '"><div class="delete"></div></div>';
             }
             ?>
         </div>

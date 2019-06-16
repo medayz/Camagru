@@ -26,6 +26,17 @@ class GalleryController extends Controller {
         echo json_encode($likes);
     }
 
+    public function submitComment() {
+        $data = json_decode($_POST['comment']);
+        $data->user = $_SESSION['user'];
+        $this->picturesModel->newComment($data);
+        echo json_encode($this->picturesModel->getComments());
+    }
+
+    public function getComments() {
+        echo json_encode(array_reverse($this->picturesModel->getPicComments($_POST['pic'])));
+    }
+
     public function getLikes() {
         $likes['loggedOn_user'] = $_SESSION['user'];
         $likes['all_likes'] = $this->picturesModel->getLikes();
