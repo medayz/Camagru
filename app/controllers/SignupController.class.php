@@ -1,13 +1,13 @@
 <?php
 class   SignupController extends Controller {
-    public function __construct() {
-    }
+	public function __construct() {
+	}
 
-    public function index() {
-        $this->loadView('pages/test');
-    }
+	public function index() {
+		$this->loadView('pages/signup');
+	}
 
-    public function register() {
-    }
+	public function register() {
+	}
 }
 ?>
