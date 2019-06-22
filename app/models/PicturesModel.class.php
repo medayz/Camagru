@@ -75,6 +75,17 @@ class PicturesModel
         $this->db->execute();
     }
 
+    public function removeComment($data)
+    {
+        $this->db->query('DELETE FROM `comments` WHERE `id` = :id');
+        $this->db->bind(':id', $data->id);
+//        $this->db->bind(':user', $data->username);
+//        $this->db->bind(':pic', $data->pic_path);
+//        $this->db->bind(':text', $data->content);
+
+        return $this->db->execute();
+    }
+
     public function getLikes() {
         $this->db->query("SELECT `username`, `pic_path` FROM `likes`");
         return $this->db->getAllRows();

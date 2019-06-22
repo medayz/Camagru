@@ -7,6 +7,7 @@ function    logout() {
 }
 
 function    initialize_session($data) {
-    $_SESSION['user'] = $data['username'];
+    $_SESSION['user'] = $data->username;
+    $_SESSION['email'] = $data->email;
 }
 ?>

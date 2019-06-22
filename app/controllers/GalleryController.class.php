@@ -33,6 +33,15 @@ class GalleryController extends Controller {
         echo json_encode($this->picturesModel->getComments());
     }
 
+    public function deleteComment() {
+        $cmnt = json_decode($_POST['comment']);
+        if ($this->picturesModel->removeComment($cmnt)) {
+            echo 'OK';
+        }   else {
+            echo 'ERROR';
+        }
+    }
+
     public function getComments() {
         echo json_encode(array_reverse($this->picturesModel->getPicComments($_POST['pic'])));
     }

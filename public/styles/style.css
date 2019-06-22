@@ -127,6 +127,19 @@ span.err {
     background-color: #F7F052;
 }
 
+span.go-to-signup {
+    color: #767886;
+    display: block;
+    font-size: 9pt;
+}
+a.signup-link {
+    text-decoration: none;
+    color: #B7CBC1;
+}
+a.signup-link:hover {
+    color: #DFF8EB;
+}
+
 #container {
     width: 550px;
     height: 550px;
@@ -177,14 +190,13 @@ img#logo {
 **  GALLERY
 ****************/
 
-
 #show-post {
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgba(41, 41, 65, 0.95);
+    background-color: rgba(41, 41, 65, 0.98);
     display: none;
 }
 #cancel {
@@ -215,12 +227,29 @@ img#logo {
     margin: auto;
 }
 #post-img {
-    transform: scaleX(-1);
+    /*transform: scaleX(-1);*/
     background: #DEDA7C url("http://localhost/camagru/img/Users_pics/hamid_15605361432001.png") no-repeat center;
     background-size: 100%;
     border-radius: 8px 8px 0 0;
     /*width: 100%;*/
     /*height: 60%;*/
+}
+#big-like {
+    background: url("http://localhost/camagru/img/Icons/like-hover.svg");
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    margin: auto;
+    display: none;
+}
+#big-like:hover {
+    transform: scale(1.5);
+    cursor: pointer;
 }
 .delete {
     position: absolute;
@@ -234,6 +263,16 @@ img#logo {
 .delete:hover {
     transform: scale(1.2);
     cursor: pointer;
+}
+.delcom {
+    width: 15px;
+    height: 15px;
+    float: right;
+    position: relative;
+    top: 0;
+    right: 0;
+    background: url("http://localhost/camagru/img/Icons/delete-com.svg");
+    background-size: cover;
 }
 #comment-div {
     display: block;
@@ -360,7 +399,7 @@ div.gallery {
     margin: 0;
     position: relative;
     width: 100%;
-    transform: scaleX(-1);
+    /*transform: scaleX(-1);*/
 }
 
 div.over-img {
@@ -455,9 +494,11 @@ div.pic.gallery:hover .over-img{
 #grid-container {
     display: grid;
     grid-template-columns: 2fr 1fr;
+    grid-template-areas:    "camera pics"
+                            "stickers pics";
     width: 1200px;
     height: 800px;
-    grid-gap: 20px;
+    grid-column-gap: 20px;
     background-color: #F8FA90;
     position: relative;
     top: 100px;
@@ -468,6 +509,7 @@ div.pic.gallery:hover .over-img{
 
 div#camera {
     display: flex;
+    grid-area: camera;
     vertical-align: middle;
     position: relative;
     background-color: #F8FA90;
@@ -478,6 +520,7 @@ div#pics-bar {
     /*display: grid;*/
     /*grid-row-gap: 10px;*/
     /*grid-template-columns: minmax(200px, 1fr);*/
+    grid-area: pics;
     position: relative;
     background-color: #F4EF88;
     /*background-color: #CBE2D6;*/
@@ -485,6 +528,51 @@ div#pics-bar {
     border-radius: 4px;
     overflow: auto;
 }
+#stickers {
+    position: relative;
+    grid-area: stickers;
+    height: 120px;
+    padding: 10px;
+    background-color: #F4EF88;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+#stickers > div {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    width: 100%;
+}
+#superposable {
+    z-index: 1949;
+    width: 100px;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: none;
+}
+#superposable:hover {
+    cursor: move;
+}
+.sticker {
+    position: relative;
+    height: 100px;
+    flex: 1 1 auto;
+    padding: 10px;
+    margin: 0 5px;
+    background-color: #DEDA7C;
+    border-radius: 4px;
+}
+.sticker:hover {
+    background-color: #C8C470;
+    cursor: pointer;
+}
+.sticker > img {
+    height: 100%;
+}
+
 /*******************
 **  VIDEO
 *******************/
@@ -548,7 +636,6 @@ video {
     div.pics, div#flex-container {
         width: 960px;
     }
-
     #grid-container {
         width: 90%;
     }
@@ -560,13 +647,19 @@ video {
     }
     #grid-container {
         grid-template-columns: 1fr;
-        /*grid-row-gap: 20px;*/
-    }
-    div#grid-container {
+        grid-template-areas:    "camera"
+                                "stickers"
+                                "pics";
+        grid-row-gap: 20px;
         top: 40px;
         bottom: 0;
         height: 100%;
-        margin-bottom: 20px;
+        padding: 20px 0;
+    }
+    #stickers{
+        padding: 2%;
+        width: 640px;
+        margin: 0 auto;
     }
     div#pics-bar {
         width: 640px;
@@ -574,9 +667,13 @@ video {
         margin: 0 auto;
     }
 }
+
 @media screen and (max-width: 800px) {
     div#pics-bar {
-        width: 95%;
+        width: 96%;
+    }
+    div#stickers {
+        width: 86%;
     }
     div#camera {
         width: 100%;
@@ -587,9 +684,13 @@ video {
     div#video video {
         width: 100%;
     }
+    #superposable {
+        width: 14.7%;
+    }
     .menu {
         margin-top: 10px;
-        height: 144px;
+        /*height: 144px;*/
+        height: 100%;
         float: none;
         clear: both;
         display: block;

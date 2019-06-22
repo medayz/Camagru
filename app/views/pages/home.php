@@ -30,9 +30,19 @@
 <!--            <input type="file" accept="image/*;capture=camera">-->
             <div id="video">
                 <video style="transform: scaleX(-1);">Camera not working!</video>
+                <img id="superposable">
                 <button id="take-pic">Take a pic!</button>
             </div>
             <canvas style="display: none;"></canvas>
+        </div>
+        <div id="stickers">
+            <div>
+            <?php
+                foreach ($data['stickers'] as $sticker) {
+                    echo '<div id="' . $sticker . '" class="sticker"><img src="' . URL_ROOT . "img/Stickers/" . $sticker . '"></div>';
+                }
+            ?>
+            </div>
         </div>
         <div id="pics-bar">
 <!--            <div class="pic"><img filter="url(#svgBlur)" style="width: 300px;" src="--><?php //echo URL_ROOT; ?><!--img/pic.png"></div>-->

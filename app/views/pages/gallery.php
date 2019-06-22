@@ -13,7 +13,9 @@
         <div id="show-post">
             <div id="cancel"></div>
             <div id="post">
-                <div id="post-img"></div>
+                <div id="post-img">
+                    <div id="big-like"></div>
+                </div>
                 <div id="comment-div">
                     <div id="new-comment" class="comment">
                         <input id="com-inp" type="text" placeholder="comment this pic...">

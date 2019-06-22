@@ -20,5 +20,12 @@
         <li class="menu-item">
             <a class="menu-link<?php echo $data['page'] === 'Gallery' ? ' active' : ''; ?>" href="<?php echo URL_ROOT?>gallery">Gallery</a>
         </li>
+        <li class="menu-item">
+            <a class="menu-link<?php echo $data['page'] === 'Profile' ? ' active' : ''; ?>" href="<?php echo URL_ROOT?>users/edit">Profile</a>
+        </li>
+
+        <li class="menu-item">
+            <a class="menu-link<?php echo $data['page'] === 'Password' ? ' active' : ''; ?>" href="<?php echo URL_ROOT?>users/change_pwd">Password</a>
+        </li>
     </ul>
 </div>

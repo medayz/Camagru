@@ -12,7 +12,6 @@ errs.forEach(err => {
         err.hidden = true;
     }
 });
-
 inps.forEach(inp => {
     console.log(inp.nextElementSibling.innerHTML);
     if (inp.nextElementSibling.innerHTML !== "") {
@@ -63,28 +62,39 @@ const height = 480;
 function takepicture() {
     // new_pic.parentElement.hidden = false;
     if (width && height) {
-        var context = canvas.getContext('2d');
         canvas.width = width;
         canvas.height = height;
-        context.filter = "hue-rotate(90deg)";
-        context.drawImage(video, 0, 0, width, height);
-        var data = canvas.toDataURL('image/png');
-        // new_pic.setAttribute('src', data);
+        var context = canvas.getContext('2d');
+        // context.filter = "hue-rotate(90deg)";
+        // context.filter = "grayscale(100%)";
+        context.scale(-1, 1);
+        context.drawImage(video, width * -1, 0, width, height);
+        let data = canvas.toDataURL('image/png');
         let xhr = new XMLHttpRequest();
         xhr.open("POST", 'home/submitPic', true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.onreadystatechange = function() {
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                console.log(this.responseText);
                 let pics = JSON.parse(this.responseText);
                 let pics_html = "";
                 pics.forEach(function(path) {
                     console.log(path);
-                    pics_html += '<div class="pic"><img class="img" src="http://localhost/camagru/img/Users_pics/' + decodeURIComponent(path) + '"></div>';
+                    pics_html += '<div class="pic"><img class="img" src="http://localhost/camagru/img/Users_pics/' + decodeURIComponent(path) + '"><div class="delete"></div></div>';
                 });
                 pics_div.innerHTML = pics_html;
+                delete_pics_event();
             }
         }
-        xhr.send("img=" + encodeURIComponent(data));
+        let img = {
+            pic : encodeURIComponent(data),
+            sticker : document.querySelector('#superposable').className,
+            x : document.querySelector('#superposable').offsetLeft - 20,
+            y : document.querySelector('#superposable').offsetTop - 20,
+            width : document.querySelector('#superposable').offsetWidth,
+            height : document.querySelector('#superposable').offsetHeight
+        };
+        xhr.send("img=" + JSON.stringify(img));
     }   else {
         clearphoto();
     }
@@ -210,7 +220,25 @@ function loadComments(pic) {
             comments.forEach(function (com) {
                 let com_elem = document.createElement("div");
                 com_elem.className = "comment";
-                com_elem.innerHTML = "<span class=\"user\">" + com.username + "</span><br><span class=\"body\">" + com.content + "</span>";
+                let del_btn = document.createElement("div");
+                del_btn.className = "delete delcom";
+                del_btn.addEventListener('click', function (event) {
+                    if (confirm("do you really want to delete this so important and interesting comment ?")) {
+                        let xhr = new XMLHttpRequest();
+                        xhr.open("POST", 'gallery/deleteComment', true);
+                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        xhr.onreadystatechange = function () {
+                            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                                if (this.responseText === "OK") {
+                                    loadComments(com.pic_path);
+                                }
+                            }
+                        };
+                        xhr.send("comment=" + JSON.stringify(com));
+                    }
+                });
+                com_elem.innerHTML = "<span class=\"user\">" + com.username + "</span><br><span class=\"body\">" + com.content + "</span></div>";
+                com_elem.prepend(del_btn);
                 com_div.appendChild(com_elem);
             });
         }
@@ -222,7 +250,6 @@ var comment = document.getElementById("new-comment") ? document.getElementById("
 
  function addComment(ev, new_com) {
     if (ev.keyCode === 13 && !ev.shiftKey) {
-        console.log("hey fucker!");
         let text = encodeURIComponent(new_com);
         let url = window.getComputedStyle(document.getElementById("post-img")).backgroundImage.match("(?<=\\(\")(.*?)(?=\"\\))").shift();
         let xhr = new XMLHttpRequest();
@@ -230,7 +257,6 @@ var comment = document.getElementById("new-comment") ? document.getElementById("
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.onreadystatechange = function() {
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                // let new_com = JSON.parse(this.responseText);
                 loadComments(url.split('/').pop());
             }
         };
@@ -238,36 +264,17 @@ var comment = document.getElementById("new-comment") ? document.getElementById("
             text: text,
             pic: url.split('/').pop()
         };
-        console.log(comm);
         xhr.send("comment=" + JSON.stringify(comm));
     }
 }
 
-if (comment) {
-    comment.addEventListener('keyup', function (ev) {
-        addComment(ev, this.value);
-    });
-}
-function wheel_event(ev) {
-    ev.preventDefault();
-}
-function disable_scroll() {
-    if (window.addEventListener) {
-        window.addEventListener('DOMMouseScroll', wheel_event, false);
-    }
-}
-function enable_scroll() {
-    if (window.removeEventListener) {
-        window.removeEventListener('DOMMouseScroll', wheel_event, false);
-    }
-}
- 
  var all_pics = document.querySelectorAll(".gallery");
  all_pics.forEach(function (pic) {
      pic.addEventListener('click', function () {
          let show_post = document.getElementById("show-post");
          show_post.style.display = "block";
          show_post.lastElementChild.firstElementChild.style.backgroundImage = "url(\"" + this.firstElementChild.src + "\")";
+         document.querySelector("body").style.overflow = "hidden";
          loadComments(this.firstElementChild.src.split('/').pop());
      });
  });
@@ -275,33 +282,135 @@ function enable_scroll() {
      document.getElementById("cancel").addEventListener('click', function () {
          let show_post = document.getElementById("show-post");
          show_post.style.display = "none";
+         document.querySelector("body").style.overflow = "";
+         loadLikes();
      });
  }
  window.addEventListener('keyup', function (ev) {
      if (ev.key == "Escape") {
          let show_post = document.getElementById("show-post");
          show_post.style.display = "none";
+         document.querySelector("body").style.overflow = "";
+         loadLikes();
      }
 });
- var delete_btns = document.querySelectorAll(".delete");
- delete_btns.forEach(btn => {
-     btn.addEventListener('click', function () {
-         let xhr = new XMLHttpRequest();
-         xhr.open("POST", 'home/deletePic', true);
-         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-         xhr.onreadystatechange = function() {
-             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                 // console.log(this.responseText);
-                 let pics = JSON.parse(this.responseText);
-                 let pics_html = "";
-                 pics.forEach(function(path) {
-                     pics_html += '<div class="pic"><img class="img" src="http://localhost/camagru/img/Users_pics/' + decodeURIComponent(path) + '"><div class="delete"></div></div>';
-                 });
-                 pics_div.innerHTML = pics_html;
+ delete_pics_event();
+ function   delete_pics_event() {
+     let delete_btns = document.querySelectorAll(".delete");
+     delete_btns.forEach(btn => {
+         btn.addEventListener('click', function () {
+             if (confirm("do you really want to delete this amazing masterpiece ?")) {
+                 let xhr = new XMLHttpRequest();
+                 xhr.open("POST", 'home/deletePic', true);
+                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                 xhr.onreadystatechange = function () {
+                     if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                         // console.log(this.responseText);
+                         let pics = JSON.parse(this.responseText);
+                         let pics_html = "";
+                         pics.forEach(function (path) {
+                             pics_html += '<div class="pic"><img class="img" src="http://localhost/camagru/img/Users_pics/' + decodeURIComponent(path) + '"><div class="delete"></div></div>';
+                         });
+                         pics_div.innerHTML = pics_html;
+                         delete_pics_event();
+                     }
+                 };
+                 xhr.send("pic=" + this.parentElement.firstElementChild.src.split('/').pop());
              }
-         };
-         xhr.send("pic=" + this.parentElement.firstElementChild.src.split('/').pop());
+         });
      });
- });
+ }
+
+ if (document.querySelector('#post-img')) {
+     document.querySelector('#post-img').addEventListener('mouseover', function () {
+         this.firstElementChild.style.display = "block";
+     });
+     document.querySelector('#post-img').addEventListener('mouseout', function () {
+         this.firstElementChild.style.display = "none";
+     });
+     document.querySelector('#post-img').addEventListener('click', function () {
+         let xhr = new XMLHttpRequest();
+         pic_name = getComputedStyle(this).backgroundImage.match("(?<=\\(\")(.*?)(?=\"\\))").shift().split('/').pop();
+         xhr.open("POST", 'gallery/likePic', true);
+         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+         xhr.send("pic=" + pic_name);
+     });
+ }
+
+var stickers = document.querySelectorAll('.sticker');
+var superposable = document.querySelector('#superposable');
+stickers.forEach(function (sticker) {
+    sticker.addEventListener('click', function () {
+        if (superposable.src === this.firstElementChild.src) {
+            superposable.src = "";
+            superposable.className = "";
+            superposable.style.display = "none";
+        }
+        else {
+            superposable.src = this.firstElementChild.src;
+            superposable.className = this.id;
+            superposable.style.display = "block";
+            if (["rasbiri.png", "10vitesse.png", "55.png", "aymane.png", "ozaazaa.png"].includes(this.id)) {
+                superposable.style.width = "300px";
+            }
+            else {
+                superposable.style.width = "100px";
+            }
+        }
+    });
+});
+
+dragElement(superposable);
+function dragElement(elmnt) {
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0, top = 0, left = 0;
 
 
+    elmnt.onmousedown = dragMouseDown;
+
+    function dragMouseDown(e) {
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e.preventDefault();
+        // calculate the new cursor position:
+        let img_size = document.querySelector('#superposable').offsetHeight;
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        // set the element's new position:
+        let video_bounds = document.querySelector("video").getBoundingClientRect();
+        if ((elmnt.offsetTop - pos2) < video.offsetTop) {
+            top = video.offsetTop;
+        }   else if ((elmnt.offsetTop - pos2) > (video_bounds.bottom - video_bounds.top + 20 - img_size)) {
+            top = video_bounds.bottom - video_bounds.top + 20 - img_size;
+        }   else {
+            top = elmnt.offsetTop - pos2;
+        }
+
+        if ((elmnt.offsetLeft - pos1) < video.offsetLeft) {
+            left = video.offsetLeft;
+        }   else if ((elmnt.offsetLeft - pos1) > (video_bounds.right - video_bounds.left + 20 - img_size)) {
+            left = video_bounds.right - video_bounds.left + 20 - img_size;
+        }   else {
+            left = elmnt.offsetLeft - pos1;
+        }
+
+        elmnt.style.top = top + "px";
+        elmnt.style.left = left + "px";
+    }
+
+    function closeDragElement() {
+        // stop moving when mouse button is released:
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}

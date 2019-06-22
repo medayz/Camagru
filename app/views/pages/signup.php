@@ -1,7 +1,7 @@
 <?php require APP_PATH . 'views/includes/header.php'; ?>
         <div id="container">
             <div id="form">
-                <form action="<?php echo URL_ROOT; ?>signup/register" method="post">
+                <form action="<?php echo URL_ROOT; ?>users/register" method="post">
                     <img id="logo" src="<?php echo URL_ROOT; ?>img/logo.png">
 
                     <div class="inp-grp">
