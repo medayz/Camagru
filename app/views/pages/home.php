@@ -30,13 +30,15 @@
 <!--            <input type="file" accept="image/*;capture=camera">-->
             <div id="video">
                 <video style="transform: scaleX(-1);">Camera not working!</video>
-                <img id="superposable">
-                <button id="take-pic">Take a pic!</button>
+                <div id="video-btns">
+                    <button id="take-pic">Take a pic!</button>
+                    <div id="upload-pic"><input type="file"></div>
+                </div>
             </div>
             <canvas style="display: none;"></canvas>
         </div>
         <div id="stickers">
-            <div>
+            <div id="sticker-bar">
             <?php
                 foreach ($data['stickers'] as $sticker) {
                     echo '<div id="' . $sticker . '" class="sticker"><img src="' . URL_ROOT . "img/Stickers/" . $sticker . '"></div>';
@@ -51,6 +53,28 @@
                 echo '<div class="pic"><img class="img" src="' . URL_ROOT . 'img/Users_pics/' . $name . '"><div class="delete"></div></div>';
             }
             ?>
+        </div>
+    </div>
+    <div id="show-upload">
+        <div id="cancel"></div>
+        <div id="edit-pic">
+                <!--            <input type="file" accept="image/*;capture=camera">-->
+            <div id="edit-uploaded">
+<!--                <div style="margin: 0 auto; display: flex; justify-content: center; align-items: center; width: 640px; height: 480px; background-color: #F8FA90;">-->
+                <div id="pic-frame">
+                    <img id="uploaded">
+                </div>
+                <button id="save-pic">Save!</button>
+            </div>
+            <div id="stickers">
+                <div id="sticker-bar">
+                    <?php
+                    foreach ($data['stickers'] as $sticker) {
+                        echo '<div id="' . $sticker . '" class="sticker-upload"><img src="' . URL_ROOT . "img/Stickers/" . $sticker . '"></div>';
+                    }
+                    ?>
+                </div>
+            </div>
         </div>
     </div>
 <?php require APP_PATH . 'views/includes/footer.php'; ?>

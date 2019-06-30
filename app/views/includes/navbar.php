@@ -25,7 +25,7 @@
         </li>
 
         <li class="menu-item">
-            <a class="menu-link<?php echo $data['page'] === 'Password' ? ' active' : ''; ?>" href="<?php echo URL_ROOT?>users/change_pwd">Password</a>
+            <a class="menu-link<?php echo $data['page'] === 'Password' ? ' active' : ''; ?>" href="<?php echo URL_ROOT?>users/changePassword">Password</a>
         </li>
     </ul>
 </div>

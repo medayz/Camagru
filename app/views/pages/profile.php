@@ -4,11 +4,13 @@
             <div id="form">
                 <form action="<?php echo URL_ROOT; ?>users/edit" method="post">
                     <div class="inp-grp">
+                        <span style="border-radius: 10px; padding: 2px 10px; color: #2D3047; background-color: #F8FA90; letter-spacing: 1.2pt; text-align: left; line-height: 40px; font-size: 10pt; font-family: Helvetica, sans-serif;">e-mail address</span>
                         <input class="inp email" type="text" name="email" placeholder="e-mail address" value="<?php echo $data['email']; ?>">
                         <span class="err email"><?php echo $data['email_err']; ?></span>
                     </div>
 
                     <div class="inp-grp">
+                        <span style="border-radius: 10px; padding: 2px 10px; color: #2D3047; background-color: #F8FA90; letter-spacing: 1.2pt; text-align: left; line-height: 40px; font-size: 10pt; font-family: Helvetica, sans-serif;">username</span>
                         <input class="inp username" type="text" name="username" placeholder="username" value="<?php echo $data['username']; ?>">
                         <span class="err username"><?php echo $data['username_err']; ?></span>
                     </div>

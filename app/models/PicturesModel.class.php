@@ -91,6 +91,12 @@ class PicturesModel
         return $this->db->getAllRows();
     }
 
+    public function getPicLikes($pic) {
+        $this->db->query("SELECT `username` FROM `likes` WHERE `pic_path`=:pic");
+        $this->db->bind(':pic', $pic);
+        return $this->db->getAllRows();
+    }
+
     public function getPicComments($pic) {
         $this->db->query("SELECT * FROM `comments` WHERE pic_path = :pic");
         $this->db->bind(':pic', $pic);
@@ -105,7 +111,14 @@ class PicturesModel
     }
 
     public function getAllPics() {
-        $this->db->query("SELECT path FROM pics");
+        $this->db->query("SELECT `path` FROM `pics` ORDER BY `path` DESC LIMIT 20");
+        return $this->db->getAllRows();
+    }
+
+    public function getRowPics($index) {
+        $this->db->query("SELECT `path` FROM `pics` ORDER BY `path` DESC LIMIT :index, 4");
+        $this->db->bind(':index', $index, PDO::PARAM_INT);
+
         return $this->db->getAllRows();
     }
 }

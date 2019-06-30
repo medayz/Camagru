@@ -2,7 +2,7 @@
 <?php require APP_PATH . 'views/includes/navbar.php'; ?>
         <div id="container">
             <div id="form">
-                <form action="<?php echo URL_ROOT; ?>users/change_pwd" method="post">
+                <form action="<?php echo URL_ROOT; ?>users/changePassword" method="post">
 
                     <div class="inp-grp">
                         <input class="inp old-pwd" type="password" name="pwd" placeholder="current password" value="<?php echo $data['pwd']; ?>">

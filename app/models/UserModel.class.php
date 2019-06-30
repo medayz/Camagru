@@ -35,12 +35,12 @@ class UserModel {
         $this->db->query('INSERT INTO `users`(username, email, pwd) VALUES(:username, :email, :pwd)');
         $this->db->bind(':username', $data['username']);
         $this->db->bind(':email', $data['email']);
-        $this->db->bind(':pwd', $data['new_pwd']);
+        $this->db->bind(':pwd', $data['pwd']);
 
         return $this->db->execute();
     }
 
-    public  function change_pwd($data) {
+    public  function changePwd($data) {
         if (($err_msg = $this->checkUser($data['username'], $data['pwd'])) === "Success") {
             $this->db->query('UPDATE `users` SET `pwd`= :pwd WHERE `username` = :user');
             $this->db->bind(':user', $data['username']);

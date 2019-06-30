@@ -16,6 +16,8 @@
                 <div id="post-img">
                     <div id="big-like"></div>
                 </div>
+                <div id="user-likes">
+                </div>
                 <div id="comment-div">
                     <div id="new-comment" class="comment">
                         <input id="com-inp" type="text" placeholder="comment this pic...">
@@ -23,7 +25,7 @@
                 </div>
             </div>
         </div>
-        <div id="footer" style="color: #B7CBC1; background-color: #DFF8EB;">
+        <div id="footer" style="color: #DFF8EB; background-color: #292C41;">
             <div id="flex-container">
                 <div><span id="school">1337 School</span></div>
                 <div id="watermark"><img src="<?php echo URL_ROOT; ?>img/watermark.png"></div>

@@ -5,6 +5,7 @@ class GalleryController extends Controller {
     public function __construct() {
         $this->picturesModel = $this->loadModel("Pictures");
     }
+
     public function index() {
         $data['page'] = "Gallery";
         $data['n_likes'] = 15;
@@ -12,9 +13,14 @@ class GalleryController extends Controller {
         $data['pics'] = [];
         foreach ($this->picturesModel->getAllPics() as $pic)
             $data['pics'][] = $pic->path;
-        $data['pics'] = array_reverse($data['pics']);
         $this->loadView('pages/gallery', $data);
     }
+
+    public function newRowPics() {
+        $index = intval($_POST['index']);
+        echo json_encode($this->picturesModel->getRowPics($index));
+    }
+
     public function likePic() {
         $likes = [];
         $data['pic'] = $_POST['pic'];
@@ -50,6 +56,11 @@ class GalleryController extends Controller {
         $likes['loggedOn_user'] = $_SESSION['user'];
         $likes['all_likes'] = $this->picturesModel->getLikes();
         echo json_encode($likes);
+    }
+
+    public function getPicLikes() {
+        $pic = $_POST['pic'];
+        echo json_encode($this->picturesModel->getPicLikes($pic));
     }
 
     public function unlikePic() {

@@ -215,7 +215,7 @@ img#logo {
 #post {
     position: absolute;
     display: grid;
-    grid-template-rows: 3fr 2fr;
+    grid-template-rows: 6fr .7fr 5fr;
     top: 0;
     bottom: 0;
     left: 0;
@@ -227,12 +227,31 @@ img#logo {
     margin: auto;
 }
 #post-img {
-    /*transform: scaleX(-1);*/
-    background: #DEDA7C url("http://localhost/camagru/img/Users_pics/hamid_15605361432001.png") no-repeat center;
-    background-size: 100%;
+    background: #F8FA9A url("http://localhost/camagru/img/Users_pics/hamid_15605361432001.png") no-repeat;
+    background-size: contain;
+    background-position: center 20px;
     border-radius: 8px 8px 0 0;
-    /*width: 100%;*/
-    /*height: 60%;*/
+    position: relative;
+    margin: 10px 2% 0;
+}
+#user-likes {
+    background: #F8FA9A;
+    box-shadow: 0 7px 17px -6px rgba(0,0,0,0.2);
+    border-radius: 0 0 16px 16px;
+    /*text-align: center;*/
+    color: #292C41;
+    margin: 0 2%;
+    width: 96%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#user-likes span {
+    margin: 20px;
+}
+#user-likes span:hover {
+    cursor: pointer;
+    text-decoration: underline;
 }
 #big-like {
     background: url("http://localhost/camagru/img/Icons/like-hover.svg");
@@ -327,7 +346,7 @@ div#footer {
     left: 0;
     bottom: 0;
     margin: 0 auto;
-    padding-bottom: 20px;
+    padding: 20px 0;
     text-align: center;
     line-height: 30px;
 }
@@ -362,12 +381,12 @@ div.main {
     margin: 0 0 40px 0;
     padding: 40px 0 20px 0;
     display: block;
-    background-color: #DFF8EB;
+    background-color: #F8FA90;
     /*border-radius: 8px;*/
 }
 
 div.pics {
-    background-color: #DFF8EB;
+    background-color: #F8FA90;
     padding: 20px;
     width: 1330px;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -392,13 +411,19 @@ div.pic {
 }
 
 div.gallery {
-    background-color: #CBE2D6;
+    width: 300px;
+    /*height: 300px;*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F4EF88;
 }
 
 .img {
     margin: 0;
     position: relative;
-    width: 100%;
+    /*max-height: 100%;*/
+    max-width: 100%;
     /*transform: scaleX(-1);*/
 }
 
@@ -490,7 +515,28 @@ div.pic.gallery:hover .over-img{
 /**************
 **  HOME PAGE
 **************/
-
+#show-upload {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(41, 41, 65, 0.98);
+    display: none;
+}
+#pic-frame {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 640px;
+    height: 480px;
+    background-color: #F8FA90;
+}
+#uploaded {
+    max-width: 640px;
+    max-height: 480px;
+}
 #grid-container {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -537,26 +583,23 @@ div#pics-bar {
     border-radius: 4px;
     overflow-x: auto;
 }
-#stickers > div {
+#sticker-bar {
     position: relative;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: flex-start;
-    width: 100%;
 }
-#superposable {
+.superposable {
     z-index: 1949;
     width: 100px;
     position: absolute;
-    top: 20px;
-    left: 20px;
     display: none;
 }
-#superposable:hover {
+.superposable:hover {
     cursor: move;
 }
-.sticker {
+.sticker, .sticker-upload {
     position: relative;
     height: 100px;
     flex: 1 1 auto;
@@ -565,19 +608,19 @@ div#pics-bar {
     background-color: #DEDA7C;
     border-radius: 4px;
 }
-.sticker:hover {
+.sticker:hover, .sticker-upload:hover {
     background-color: #C8C470;
     cursor: pointer;
 }
-.sticker > img {
+.sticker > img, .sticker-upload > img {
     height: 100%;
 }
+
 
 /*******************
 **  VIDEO
 *******************/
 div#video {
-    align-items: center;
     background-color: #F4EF88;
     padding: 20px;
     border-radius: 4px;
@@ -588,11 +631,15 @@ div#video {
     left: 0;
     margin: auto;
 }
-#take-pic {
+
+#video-btns {
     display: block;
     margin: 20px auto;
+    width: 250px;
+}
+#take-pic {
+    float: left;
     position: relative;
-
     color: #F8FA90;
     -webkit-appearance: none;
     background-color: #2D3047;
@@ -613,6 +660,84 @@ div#video {
     transition: background-color .3s;
     transform: scale(1.15);
 }
+#edit-uploaded {
+    background-color: #F4EF88;
+    padding: 20px;
+    border-radius: 4px;
+    top: 0;
+    position: relative;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+}
+#edit-pic {
+    position: absolute;
+    top: 120px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 680px;
+    height: 800px;
+    margin: 0 auto;
+}
+#edit-pic > div {
+    margin: 10px auto;
+}
+#uploaded {
+    margin: 0 auto;
+}
+#save-pic {
+    display: block;
+    margin: 20px auto;
+    position: relative;
+    color: #F8FA90;
+    -webkit-appearance: none;
+    background-color: #2D3047;
+    border: 1px solid #2D3047;
+    width: 120px;
+    height: 50px;
+    /*padding: 2px;*/
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12pt;
+}
+#save-pic:hover {
+    background-color: #F8FA90;
+    color: #2D3047;
+    cursor: pointer;
+    transition: background-color .3s;
+    transform: scale(1.15);
+}
+#upload-pic {
+    position: relative;
+    display: inline;
+    float: left;
+    background: #F8FA9A url("http://localhost/camagru/img/Icons/upload.svg") center no-repeat;
+    background-size: 20px 20px;
+    padding: 0;
+    height: 40px;
+    width: 40px;
+    margin: 5px 20px;
+    border-radius: 4px;
+}
+#upload-pic:hover {
+    background: #F7F052 url("http://localhost/camagru/img/Icons/upload.svg") center no-repeat;
+    background-size: 20px 20px;
+}
+input[type="file"] {
+    position: absolute;
+    margin: 0;
+    cursor: pointer;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
 video {
     width: 100%;
     /*position: relative;*/
@@ -657,8 +782,8 @@ video {
         padding: 20px 0;
     }
     #stickers{
-        padding: 2%;
         width: 640px;
+        padding: 2%;
         margin: 0 auto;
     }
     div#pics-bar {
@@ -669,11 +794,27 @@ video {
 }
 
 @media screen and (max-width: 800px) {
+    #post-img {
+        background-position: center;
+    }
+    div#edit-pic {
+        width: 90%;
+    }
+    div#edit-uploaded {
+        width: 96%;
+        padding: 2%;
+    }
     div#pics-bar {
         width: 96%;
     }
-    div#stickers {
-        width: 86%;
+    div#pic-frame {
+        width: 96%;
+    }
+    #stickers {
+        width: 96%;
+    }
+    #sticker-bar {
+        width: 1em;
     }
     div#camera {
         width: 100%;
@@ -683,9 +824,6 @@ video {
     }
     div#video video {
         width: 100%;
-    }
-    #superposable {
-        width: 14.7%;
     }
     .menu {
         margin-top: 10px;
@@ -726,9 +864,6 @@ video {
         height: 60%;
         margin: 100px 2%;
         top: 100px;
-    }
-    #post-img {
-        background-size: 90%;
     }
 }
 
@@ -784,7 +919,7 @@ video {
         width: 90%;
     }
     #post {
-        grid-template-rows: 1fr 1fr;
+        grid-template-rows: 4fr .6fr 4fr;
         margin: 100px 2%;
     }
 }

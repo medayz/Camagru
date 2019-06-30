@@ -127,7 +127,6 @@ class   UsersController extends Controller {
     }
 
     public function edit() {
-        $data['page'] = 'Profile';
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $data = [
@@ -136,6 +135,7 @@ class   UsersController extends Controller {
                 'email' => $_POST['email'],
                 'email_err' => ''
             ];
+            $data['page'] = 'Profile';
             if ($data['username'] === $_SESSION['user']
                 && $data['email'] === $_SESSION['email']) {
 
@@ -143,16 +143,39 @@ class   UsersController extends Controller {
 
             }   else {
                 if ($data['username'] != $_SESSION['user']) {
-                    $data['old_user'] = $_SESSION['user'];
-                    $this->userModel->editUsername($data);
+                    if (empty($_POST['username']))
+                        $data['username_err'] = "Put a fu*king username!";
+                    if (!preg_match("/^[a-zA-Z]+[\w-]*$/", $data['username']))
+                        $data['username_err']
+                            = "Your username must begin with a letter and can only contain alphanumeric characters dashes and underscores";
+
+                    if (empty($data['username_err'])) {
+                        if ($this->userModel->getUser($data['username'])) {
+                            $data['username_err'] = "Unfortunately some Motherfu*ker is already using ur favorite username, pick another one!";
+                        }   else {
+                            $data['old_user'] = $_SESSION['user'];
+                            $this->userModel->editUsername($data);
+                        }
+                    }
                 }
                 if ($data['email'] != $_SESSION['email']) {
-                    $data['old_email'] = $_SESSION['email'];
-                    $this->userModel->editEmail($data);
+                    if (!preg_match("/^[\w.!#$%&'*\+\/=?\^`{|}~-]+@(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/"
+                                    , $data['email']))
+                        $data['email_err'] = "WTF? this is not an e-mail!";
+                    if (empty($_POST['email']))
+                        $data['email_err'] = "Put a fucking email!";
+
+                    if (empty($data['email_err']) && empty($data['username_err'])) {
+                        $data['old_email'] = $_SESSION['email'];
+                        $this->userModel->editEmail($data);
+                    }
                 }
-//                $this->loadView('pages/profile', $data);
-                logout();
-                redirect('users/signin');
+                if (empty($data['email_err']) && empty($data['username_err'])) {
+                    logout();
+                    redirect('users/signin');
+                }   else {
+                    $this->loadView('pages/profile', $data);
+                }
             }
         }   else {
 
@@ -162,12 +185,12 @@ class   UsersController extends Controller {
                 'email' => $_SESSION['email'],
                 'email_err' => ''
             ];
+            $data['page'] = 'Profile';
             $this->loadView('pages/profile', $data);
         }
     }
 
-    public function change_pwd() {
-        $data['page'] = 'Password';
+    public function changePassword() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $data = [
@@ -179,6 +202,7 @@ class   UsersController extends Controller {
                 'pwd_err' => '',
                 'new_pwd_err' => ''
             ];
+            $data['page'] = 'Password';
             if ($_POST['new_pwd'] != $_POST['confirm_pwd'])
                 $data['confirm_pwd_err'] = "are u dumb? this doesn't match!";
             if (!preg_match("/[!@#\$%\^&\*\(\),\.\?\\\"\:\{\}\|<>]+/", $data['new_pwd'])
@@ -195,7 +219,7 @@ class   UsersController extends Controller {
             if (empty($data['confirm_pwd_err']) && empty($data['pwd_err'])
                 && empty($data['new_pwd_err'])) {
                 $data['new_pwd'] = password_hash($data['new_pwd'], PASSWORD_DEFAULT);
-                $err_msg = $this->userModel->change_pwd($data);
+                $err_msg = $this->userModel->changePwd($data);
                 if ($err_msg === "OK") {
                     logout();
                     redirect('users/signin');
@@ -216,6 +240,7 @@ class   UsersController extends Controller {
                 'confirm_pwd' => '',
                 'confirm_pwd_err' => ''
             ];
+            $data['page'] = 'Password';
             $this->loadView('pages/password', $data);
         }
     }
