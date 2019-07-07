@@ -15,7 +15,9 @@
                     </div>
 
                     <span class="go-to-signup">Not registered ? go fucking <a class="signup-link" href="<?php echo URL_ROOT; ?>users/signup">SIGN UP !</a></span>
-                    
+                    <br>
+                    <span class="go-to-signup"><a class="signup-link" href="<?php echo URL_ROOT; ?>users/forgotPwd">Forgot Password ?</a></span>
+
                     <button id="btn">Log In</button>
                 </form>
             </div>

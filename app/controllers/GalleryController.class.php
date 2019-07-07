@@ -18,7 +18,11 @@ class GalleryController extends Controller {
 
     public function newRowPics() {
         $index = intval($_POST['index']);
-        echo json_encode($this->picturesModel->getRowPics($index));
+        $paths = $this->picturesModel->getRowPics($index);
+        foreach ($paths as &$pics) {
+            $pics->path = URL_ROOT . 'img/Users_pics/' . $pics->path;
+        }
+        echo json_encode($paths);
     }
 
     public function likePic() {
@@ -36,7 +40,13 @@ class GalleryController extends Controller {
         $data = json_decode($_POST['comment']);
         $data->user = $_SESSION['user'];
         $this->picturesModel->newComment($data);
-        echo json_encode($this->picturesModel->getComments());
+        if (send_notif()) {
+            $subject = $data->user . ' commented on you post';
+            $msg = $data->user . ': ' . $data->text;
+            $to = $this->picturesModel->getPicOwner($data->pic)->email;
+            mail($to, $subject, $msg, EMAIL_HEADERS);
+        }
+//        echo json_encode($this->picturesModel->getComments());
     }
 
     public function deleteComment() {

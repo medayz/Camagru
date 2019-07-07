@@ -89,7 +89,7 @@ function takepicture() {
                 let pics = JSON.parse(this.responseText);
                 let pics_html = "";
                 pics.forEach(function(path) {
-                    pics_html += '<div class="pic"><img class="img" src="http://localhost/camagru/img/Users_pics/' + decodeURIComponent(path) + '"><div class="delete"></div></div>';
+                    pics_html += '<div class="pic"><img class="img" src="' + path + '"><div class="delete"></div></div>';
                 });
                 pics_div.innerHTML = pics_html;
                 delete_pics_event();
@@ -137,7 +137,7 @@ function save_picture() {
             let pics = JSON.parse(this.responseText);
             let pics_html = "";
             pics.forEach(function(path) {
-                pics_html += '<div class="pic"><img class="img" src="http://localhost/camagru/img/Users_pics/' + decodeURIComponent(path) + '"><div class="delete"></div></div>';
+                pics_html += '<div class="pic"><img class="img" src="' + path + '"><div class="delete"></div></div>';
             });
             pics_div.innerHTML = pics_html;
             delete_pics_event();
@@ -328,6 +328,7 @@ function loadComments(pic) {
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.onreadystatechange = function() {
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                console.log(this.responseText);
                 loadComments(url.split('/').pop());
             }
         };
@@ -436,7 +437,7 @@ newPics();
                          let pics = JSON.parse(this.responseText);
                          let pics_html = "";
                          pics.forEach(function (path) {
-                             pics_html += '<div class="pic"><img class="img" src="http://localhost/camagru/img/Users_pics/' + decodeURIComponent(path) + '"><div class="delete"></div></div>';
+                             pics_html += '<div class="pic"><img class="img" src="' + path + '"><div class="delete"></div></div>';
                          });
                          pics_div.innerHTML = pics_html;
                          delete_pics_event();
@@ -490,7 +491,7 @@ function    loadPics() {
                 let img = document.createElement('img');
                 div.className = "pic gallery";
                 img.className = "img";
-                img.src = 'http://' + window.location.hostname + "/camagru/img/Users_pics/" + pic.path;
+                img.src = pic.path;
                 div.appendChild(img);
                 div.innerHTML += '<div class="over-img"><div class="engagement"><span><span>0</span> likes <span>0</span> comments</span><div class="comments"></div><div class="like"></div></div></div>';
                 pics.appendChild(div);

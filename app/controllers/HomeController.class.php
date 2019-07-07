@@ -25,13 +25,11 @@
             $data = [];
             $data['page'] = "Camera";
             $img_data = $img_obj->pic;
-            $name = $_SESSION['user'] . '_' . str_replace(".", "", microtime(true)) . '.png';
-            $path = URL_ROOT . "img/Users_pics/" . $name;
+            $name = str_replace(".", "", microtime(true)) . '_' . $_SESSION['user'] . '.png';
             $file = PUBLIC_PATH . 'img/Users_pics/' . $name;
             $uri = substr($img_data,strpos($img_data, ",") + 1);
             file_put_contents($file, base64_decode($uri));
 
-            // Load the stamp and the photo to apply the watermark to
             $watermark = imagecreatefrompng(PUBLIC_PATH . 'img/pic_watermark.png');
             if (getimagesize($file)[2] === IMAGETYPE_PNG) {
                 $picture = imagecreatefrompng($file);
@@ -39,30 +37,28 @@
                 $picture = imagecreatefromjpeg($file);
             }
 
-            // Copy the stamp image onto our photo using the margin offsets and the photo
-            // width to calculate positioning of the stamp.
             if (!empty($img_obj->stickers)) {
                 foreach ($img_obj->stickers as $sticker) {
                     $size = in_array($sticker->name, $faces) ? 300 : 100;
-//                    echo "size: " . $size . "\n";
-//                    echo $sticker->y . " " . $sticker->x . "\n";
                     $sticker->x = round((float)($sticker->x * $size) / (float)$sticker->width, PHP_ROUND_HALF_UP);
                     $sticker->y = round((float)($sticker->y * $size / (float)$sticker->height), PHP_ROUND_HALF_UP);
-//                    echo $sticker->y . " " . $sticker->x . "\n";
                     $sticker_img = imagecreatefrompng(PUBLIC_PATH . 'img/Stickers/' . $sticker->name);
                     imagecopy($picture, $sticker_img, $sticker->x, $sticker->y, 0, 0, $size, $size);
                 }
             }
             imagecopy($picture, $watermark, 245, 420, 0, 0, 150, 24);
 
-            // Output and free memory
             imagepng($picture, $file, 9, PNG_ALL_FILTERS);
             imagedestroy($picture);
 
             $data['user'] = $_SESSION['user'];
             $data['path'] = $name;
             if ($this->picturesModel->storeImg($data)) {
-                echo json_encode($this->getPics());
+                $paths = $this->getPics();
+                foreach ($paths as &$path) {
+                    $path = URL_ROOT . 'img/Users_pics/' . $path;
+                }
+                echo json_encode($paths);
             }
 
         }

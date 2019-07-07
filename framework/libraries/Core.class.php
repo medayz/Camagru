@@ -22,6 +22,8 @@ class Core {
         }
 
         $this->params = $url ? array_values($url) : [];
+//        echo '<pre>';
+//        print_r($this->params);
         call_user_func(
             [$this->currentController, $this->currentMethod]
             , $this->params

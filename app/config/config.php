@@ -34,4 +34,12 @@
 
     define("SITE_NAME", "Camagru");
 
+    // email config
+    define('EMAIL_HEADERS',
+        'From: Camagru <est36berrechid@gmail.com>' . PHP_EOL .
+        'Reply-To: Camagru <est36berrechid@gmail.com>' . PHP_EOL .
+        'X-Mailer: PHP/' . phpversion() . PHP_EOL .
+        'Content-Type: text/html; charset=UTF-8'
+    );
+
 ?>

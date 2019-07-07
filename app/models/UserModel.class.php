@@ -40,6 +40,55 @@ class UserModel {
         return $this->db->execute();
     }
 
+    public  function newEmailToken($username, $token) {
+        $this->db->query('INSERT INTO `email_confirmation`(`username`, `token`) VALUES(:username, :token)');
+        $this->db->bind(':username', $username);
+        $this->db->bind(':token', $token);
+
+        return $this->db->execute();
+    }
+
+    public  function newPwdToken($user) {
+        $this->db->query('INSERT INTO `reset_pwd`(`username`, `token`) VALUES(:username, :token)');
+        $this->db->bind(':username', $user->username);
+        $this->db->bind(':token', $user->token);
+
+        return $this->db->execute();
+    }
+
+    public function checkToken($data) {
+
+        if ($data['type'] === 'reset_pwd')
+            $this->db->query("SELECT * FROM `reset_pwd` WHERE `username` = :username AND `token` = :token");
+        else
+            $this->db->query("SELECT * FROM `email_confirmation` WHERE `username` = :username AND `token` = :token");
+        $this->db->bind(":username", $data['username']);
+        $this->db->bind(":token", $data['token']);
+        if ($this->db->getRow()) {
+            return ($this->removeToken($data)) ? true : false;
+        }
+        return false;
+    }
+
+    public function removeToken($data) {
+        if ($data['type'] === 'reset_pwd')
+            $this->db->query("DELETE FROM `reset_pwd` WHERE `username` = :username");
+        else
+            $this->db->query("DELETE FROM `email_confirmation` WHERE `username` = :username");
+        $this->db->bind(":username", $data['username']);
+
+        return $this->db->execute();
+    }
+
+    public  function resetPwd($data)
+    {
+        $this->db->query('UPDATE `users` SET `pwd`= :pwd WHERE `username` = :user');
+        $this->db->bind(':user', $data['username']);
+        $this->db->bind(':pwd', $data['new_pwd']);
+
+        return $this->db->execute();
+    }
+
     public  function changePwd($data) {
         if (($err_msg = $this->checkUser($data['username'], $data['pwd'])) === "Success") {
             $this->db->query('UPDATE `users` SET `pwd`= :pwd WHERE `username` = :user');
@@ -65,6 +114,22 @@ class UserModel {
         $this->db->query('UPDATE `users` SET `email`= :email WHERE `username` = :user');
         $this->db->bind(':user', $data['username']);
         $this->db->bind(':email', $data['email']);
+
+        $this->db->execute();
+    }
+
+    public function setNotifs($data) {
+        $this->db->query('UPDATE `users` SET `send_notif`=:notif WHERE `username` = :user');
+        $this->db->bind(':user', $data['username']);
+        $this->db->bind(':notif', ($data['notif'] === 'active') ? 1 : 0, PDO::PARAM_BOOL);
+
+        $this->db->execute();
+    }
+
+    public function setUserConfirmed($data) {
+        $this->db->query('UPDATE `users` SET `active` = :active WHERE `username` = :user');
+        $this->db->bind(':user', $data['username']);
+        $this->db->bind(':active', 1, PDO::PARAM_BOOL);
 
         $this->db->execute();
     }

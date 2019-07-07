@@ -91,6 +91,18 @@ class PicturesModel
         return $this->db->getAllRows();
     }
 
+    public function getPic($pic) {
+        $this->db->query("SELECT * FROM `pics` WHERE `pic_path`=:pic");
+        $this->db->bind(':pic', $pic);
+        return $this->db->getAllRows();
+    }
+
+    public function getPicOwner($pic) {
+        $this->db->query("SELECT * FROM `users` WHERE `username`=(SELECT `user` FROM `pics` WHERE `path`=:pic)");
+        $this->db->bind(':pic', $pic);
+        return $this->db->getRow();
+    }
+
     public function getPicLikes($pic) {
         $this->db->query("SELECT `username` FROM `likes` WHERE `pic_path`=:pic");
         $this->db->bind(':pic', $pic);

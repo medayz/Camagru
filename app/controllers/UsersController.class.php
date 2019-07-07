@@ -58,8 +58,20 @@ class   UsersController extends Controller {
                     $data['username_err'] = "Unfortunately some Motherfu*ker is already using ur favorite username, pick another one!";
                     $this->loadView('pages/signup', $data);
                 }   else if ($this->userModel->register($data)) {
-                    $this->setUserSession($this->userModel->getUser($data['username']));
-                    redirect('home');
+                    $token = "";
+                    $chars = array_merge(range('A', 'Z'), range('a', 'z'), range('0', '9'));
+                    $max = count($chars) - 1;
+                    for ($i = 0; $i < 60; $i++) {
+                        $rand = mt_rand(0, $max);
+                        $token .= $chars[$rand];
+                    }
+                    $this->userModel->newEmailToken($data['username'], $token);
+                    $subject = 'Confirm your e-mail';
+                    $msg = 'You can confirm your e-mail address from <a href="' .
+                        URL_ROOT . 'users/login/' . $data['username'] . '/' . $token . '">here!</a>';
+                    $to = $data['email'];
+                    redirect('users/signin');
+                    mail($to, $subject, $msg, EMAIL_HEADERS, 'O DeliveryMode=b');
                 }   else {
 
                     $this->loadView('pages/signup', $data);
@@ -84,7 +96,8 @@ class   UsersController extends Controller {
         }
     }
 
-    public function login() {
+    public function login($params) {
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $data = [
@@ -116,13 +129,32 @@ class   UsersController extends Controller {
             }
         } else {
 
-            $data = [
-                'user' => '',
-                'pwd' => '',
-                'user_err' => '',
-                'pwd_err' => ''
-            ];
-            $this->loadView('pages/signin', $data);
+            if (empty($params)) {
+                $data = [
+                    'user' => '',
+                    'pwd' => '',
+                    'user_err' => '',
+                    'pwd_err' => ''
+                ];
+                $this->loadView('pages/signin', $data);
+            }   else {
+
+                $data = [
+                    'type' => 'confirmation',
+                    'username' => $params[0],
+                    'token' => $params[1]
+                ];
+                if (($user = $this->userModel->getUser($data['username']))) {
+                    if ($this->userModel->checkToken($data)) {
+                        $this->userModel->setUserConfirmed($data);
+                        $this->setUserSession($this->userModel->getUser($data['username']));
+                        redirect('home');
+                    } else {
+                        redirect('users/signin');
+                    }
+                }
+            }
+
         }
     }
 
@@ -130,6 +162,7 @@ class   UsersController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $data = [
+                'notif' => $_POST['notif'],
                 'username' => $_POST['username'],
                 'username_err' => '',
                 'email' => $_POST['email'],
@@ -139,6 +172,8 @@ class   UsersController extends Controller {
             if ($data['username'] === $_SESSION['user']
                 && $data['email'] === $_SESSION['email']) {
 
+                $this->userModel->setNotifs($data);
+                $_SESSION['send_notif'] = ($data['notif'] === 'active' ? 1 : 0);
                 $this->loadView('pages/profile', $data);
 
             }   else {
@@ -171,6 +206,8 @@ class   UsersController extends Controller {
                     }
                 }
                 if (empty($data['email_err']) && empty($data['username_err'])) {
+                    $this->userModel->setNotifs($data);
+                    $_SESSION['send_notif'] = ($data['notif'] === 'active' ? 1 : 0);
                     logout();
                     redirect('users/signin');
                 }   else {
@@ -180,6 +217,7 @@ class   UsersController extends Controller {
         }   else {
 
             $data = [
+                'notif' => send_notif() ? 'active' : 'inactive',
                 'username' => $_SESSION['user'],
                 'username_err' => '',
                 'email' => $_SESSION['email'],
@@ -243,6 +281,104 @@ class   UsersController extends Controller {
             $data['page'] = 'Password';
             $this->loadView('pages/password', $data);
         }
+    }
+
+    public function forgotPwd() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            if (($user = $this->userModel->getUser($_POST['username']))) {
+                $user->token = "";
+                $chars = array_merge(range('A', 'Z'), range('a', 'z'), range('0', '9'));
+                $max = count($chars) - 1;
+                for ($i = 0; $i < 60; $i++) {
+                    $rand = mt_rand(0, $max);
+                    $user->token .= $chars[$rand];
+                }
+                $data = [
+                    'type' =>  'reset_pwd',
+                    'username' => $user->username
+                ];
+                $this->userModel->removeToken($data);
+                $this->userModel->newPwdToken($user);
+                $subject = 'Reset password';
+                $msg = '<h1>This e-mail will help you get Your beautiful pictures back!</h1><a href="' .
+                    URL_ROOT . 'users/resetPwd/' . $user->username . '/' . $user->token . '">Take me to reset my password please :\'(</a>';
+                $to = $user->email;
+                redirect('users/signin');
+                mail($to, $subject, $msg, EMAIL_HEADERS);
+            }   else {
+                $data = [
+                    'username' => $_POST['username'],
+                    'username_err' => 'username not registered!'
+                ];
+                $this->loadView('pages/forgot_pwd', $data);
+            }
+
+        }   else {
+            $data = [
+                'username' => '',
+                'username_err' => ''
+            ];
+            $this->loadView('pages/forgot_pwd', $data);
+        }
+    }
+
+    public function resetPwd($params) {
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $data = [
+                'username' => $_POST['username'],
+                'new_pwd' => $_POST['new_pwd'],
+                'confirm_pwd' => $_POST['confirm_pwd'],
+                'new_pwd_err' => '',
+                'confirm_pwd_err' => ''
+            ];
+            if (!preg_match("/[!@#\$%\^&\*\(\),\.\?\\\"\:\{\}\|<>]+/", $data['new_pwd'])
+                || !preg_match("/[A-Z]+/", $data['new_pwd'])
+                || !preg_match("/[a-z]+/", $data['new_pwd'])
+                || !preg_match("/\d+/", $data['new_pwd']))
+                $data['new_pwd_err'] = "This password is weak af!";
+            if ($_POST['new_pwd'] != $_POST['confirm_pwd'])
+                $data['confirm_pwd_err'] = "are u dumb? this doesn't match!";
+            if (empty($_POST['new_pwd']))
+                $data['new_pwd_err'] = "Should I pick a fucking password for u ?";
+            if (empty($_POST['confirm_pwd']))
+                $data['confirm_pwd_err'] = "Confirm your new password here!";
+            if (empty($data['confirm_pwd_err']) && empty($data['new_pwd_err'])) {
+
+                $data['new_pwd'] = password_hash($data['new_pwd'], PASSWORD_DEFAULT);
+                if ($this->userModel->resetPwd($data)) {
+                    redirect('users/signin');
+                }
+
+            }
+            else {
+                $this->loadView('pages/reset_pwd', $data);
+            }
+
+        }   else {
+
+            if ($params[0] === "") {
+
+                redirect('users/signin');
+
+            } else {
+
+                $data = [
+                    'type' => 'reset_pwd',
+                    'username' => $params[0],
+                    'token' => $params[1]
+                ];
+                if ($this->userModel->checkToken($data)) {
+                    $this->loadView('pages/reset_pwd', $data);
+                } else {
+                    redirect('users/signin');
+                }
+
+            }
+        }
+
     }
 
     private function setUserSession($data) {

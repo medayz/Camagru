@@ -17,6 +17,7 @@ button:focus {
     outline: none;
 }
 
+
 /**************
 **  NAV_BAR
 **************/
@@ -185,12 +186,37 @@ img#logo {
     margin: 20px auto;
 }
 
+#notif {
+    width: 40px;
+    height: 40px;
+    display: block;
+    margin: 0 auto;
+}
+#notif:hover {
+    cursor: pointer;
+}
+
+#notif.inactive {
+    background: url("http://localhost/camagru/img/Icons/notif.svg");
+    background-size: cover;
+}
+
+#notif.inactive:hover {
+    background: url("http://localhost/camagru/img/Icons/notif-hover.svg");
+    background-size: cover;
+}
+
+#notif.active {
+    background: url("http://localhost/camagru/img/Icons/notif-active.svg");
+    background-size: cover;
+}
 
 /****************
 **  GALLERY
 ****************/
 
 #show-post {
+    z-index: 2003;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -534,8 +560,8 @@ div.pic.gallery:hover .over-img{
     background-color: #F8FA90;
 }
 #uploaded {
-    max-width: 640px;
-    max-height: 480px;
+    max-width: 100%;
+    max-height: 100%;
 }
 #grid-container {
     display: grid;
