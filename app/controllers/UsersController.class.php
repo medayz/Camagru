@@ -53,9 +53,12 @@ class   UsersController extends Controller {
                 $data['confirm_pwd_err'] = "Confirm your shi*ty password here!";
             if (empty($data['email_err']) && empty($data['username_err']) && empty($data['pwd_err']) && empty($data['confirm_pwd_err'])) {
                 $data['pwd'] = password_hash($data['pwd'], PASSWORD_DEFAULT);
-                if ($this->userModel->getUser($data['username'])) {
+                if (($user = $this->userModel->getUser($data['username']))
+                    || $this->userModel->emailExists($data['email'])) {
+                    $email = $this->userModel->emailExists($data['email']);
                     $data['pwd'] = '';
-                    $data['username_err'] = "Unfortunately some Motherfu*ker is already using ur favorite username, pick another one!";
+                    $data['username_err'] = $user ? 'Unfortunately some Motherfu*ker is already using ur favorite username, pick another one!' : '';
+                    $data['email_err'] = $email ? 'this e-mail address is already linked to another account!' : '';
                     $this->loadView('pages/signup', $data);
                 }   else if ($this->userModel->register($data)) {
                     $token = "";
@@ -70,8 +73,11 @@ class   UsersController extends Controller {
                     $msg = 'You can confirm your e-mail address from <a href="' .
                         URL_ROOT . 'users/login/' . $data['username'] . '/' . $token . '">here!</a>';
                     $to = $data['email'];
-                    redirect('users/signin');
-                    mail($to, $subject, $msg, EMAIL_HEADERS, 'O DeliveryMode=b');
+                    mail($to, $subject, $msg, EMAIL_HEADERS);
+                    $data = [
+                        'msg' => "We sent you an e-mail to confirm your e-mail address"
+                    ];
+                    $this->loadView('pages/signin', $data);
                 }   else {
 
                     $this->loadView('pages/signup', $data);
@@ -201,8 +207,12 @@ class   UsersController extends Controller {
                         $data['email_err'] = "Put a fucking email!";
 
                     if (empty($data['email_err']) && empty($data['username_err'])) {
-                        $data['old_email'] = $_SESSION['email'];
-                        $this->userModel->editEmail($data);
+                        if ($this->userModel->emailExists($data['email'])) {
+                            $data['email_err'] = 'this e-mail address is already linked to another account!';
+                        }   else {
+                            $data['old_email'] = $_SESSION['email'];
+                            $this->userModel->editEmail($data);
+                        }
                     }
                 }
                 if (empty($data['email_err']) && empty($data['username_err'])) {

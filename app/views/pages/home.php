@@ -31,7 +31,7 @@
             <div id="video">
                 <video style="transform: scaleX(-1);">Camera not working!</video>
                 <div id="video-btns">
-                    <button id="take-pic">Take a pic!</button>
+                    <button id="take-pic" disabled>Take a pic!</button>
                     <div id="upload-pic"><input type="file"></div>
                 </div>
             </div>

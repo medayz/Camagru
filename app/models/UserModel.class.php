@@ -13,6 +13,13 @@ class UserModel {
         return $this->db->getRow();
     }
 
+    public function emailExists($email) {
+
+        $this->db->query("SELECT * FROM users WHERE email = :email");
+        $this->db->bind(":email", $email);
+        return $this->db->getRow();
+    }
+
     private function checkUser($username, $password) {
 
         $hashed_pwd = $this->getUser($username)->pwd;

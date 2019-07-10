@@ -136,13 +136,15 @@ function save_picture() {
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
             let pics = JSON.parse(this.responseText);
             let pics_html = "";
-            pics.forEach(function(path) {
+            pics.paths.forEach(function(path) {
                 pics_html += '<div class="pic"><img class="img" src="' + path + '"><div class="delete"></div></div>';
             });
             pics_div.innerHTML = pics_html;
             delete_pics_event();
             document.querySelector('#show-upload').style.display = "none";
             document.querySelector("body").style.overflow = "";
+            if (pics.err !== '')
+                alert(pics.err);
         }
     };
     let img = {
@@ -345,12 +347,10 @@ function newPics() {
      all_pics.forEach(function (pic) {
          pic.addEventListener('click', function () {
              let show_post = document.getElementById("show-post");
-             let took_pic = document.createTextNode('hamid');
              let n_likes = document.createElement('span');
-             let url = window.getComputedStyle(document.getElementById("post-img")).backgroundImage.match("(?<=\\(\")(.*?)(?=\"\\))").shift();
+             let took_pic = document.createTextNode(this.firstElementChild.src.split('_').pop().split('.').shift());
              show_post.style.display = "block";
              document.querySelector('#post-img').style.backgroundImage = "url(\"" + this.firstElementChild.src + "\")";
-             console.log(this.lastElementChild.firstElementChild.firstElementChild.firstElementChild.innerText);
              n_likes.innerText = this.lastElementChild.firstElementChild.firstElementChild.firstElementChild.innerText + " likes";
              n_likes.addEventListener('click', function() {
                  if (!this.nextElementSibling) {
@@ -503,20 +503,17 @@ function    loadPics() {
     xhr.send("index=" + document.querySelectorAll('.gallery').length);
 }
 window.addEventListener('scroll', function scroll_handler() {
-    if( typeof scroll_handler.scroll === 'undefined' ) {
-        scroll_handler.scroll = 200;
-    }
-    if (this.scrollY >= scroll_handler.scroll) {
-        scroll_handler.scroll = this.scrollY + 200;
-        console.log("loading pics... " + scroll_handler.scroll);
+    let pics_div = document.querySelector('.pics');
+    console.log(this.screen.height);
+    console.log(pics_div.getBoundingClientRect().bottom);
+    if (this.screen.height + this.scrollY >= pics_div.getBoundingClientRect().bottom) {
         loadPics();
-    }   else {
-        console.log(scroll_handler.scroll);
     }
 });
 
 function make_sticker_chosable(sticker, neighbor) {
     sticker.addEventListener('click', function () {
+        document.querySelector('#take-pic').disabled = false;
         let superposable = document.createElement("img");
         superposable.className = "superposable";
         superposable.src = this.firstElementChild.src;
@@ -540,7 +537,11 @@ function make_sticker_chosable(sticker, neighbor) {
         else {
             superposable.style.width = Math.round(document.querySelector('video').offsetWidth * 15.63 / 100) + "px";
         }
-        superposable.addEventListener('dblclick', function (e) { this.remove(); });
+        superposable.addEventListener('dblclick', function (e) {
+            this.remove();
+            if (!document.querySelector('.superposable'))
+                document.querySelector('#take-pic').disabled = true;
+        });
         console.log(neighbor.getBoundingClientRect().top);
         console.log(neighbor.getBoundingClientRect().left);
         superposable.style.top =  neighbor.offsetTop + "px";

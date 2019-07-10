@@ -6,6 +6,10 @@ class Core {
 
     public function __construct() {
         $url = $this->getUrl();
+        if ($url[0] === "setup") {
+            require CONFIG_PATH . 'setup.php';
+            exit();
+        }
         if (file_exists('../app/controllers/' . ucwords($url[0]) . 'Controller.class.php')) {
             $this->currentController = ucwords($url[0]) . 'Controller';
             unset($url[0]);
@@ -22,8 +26,6 @@ class Core {
         }
 
         $this->params = $url ? array_values($url) : [];
-//        echo '<pre>';
-//        print_r($this->params);
         call_user_func(
             [$this->currentController, $this->currentMethod]
             , $this->params

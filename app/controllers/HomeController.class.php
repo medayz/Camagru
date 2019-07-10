@@ -8,6 +8,7 @@
         }
 
         public function submitPic() {
+            $err_msg = '';
             $img_obj = json_decode($_POST['img']);
             $faces = [
                 "rasbiri.png",
@@ -28,45 +29,73 @@
             $name = str_replace(".", "", microtime(true)) . '_' . $_SESSION['user'] . '.png';
             $file = PUBLIC_PATH . 'img/Users_pics/' . $name;
             $uri = substr($img_data,strpos($img_data, ",") + 1);
-            file_put_contents($file, base64_decode($uri));
+            if (substr($img_data, 5, 5) === 'image') {
 
-            $watermark = imagecreatefrompng(PUBLIC_PATH . 'img/pic_watermark.png');
-            if (getimagesize($file)[2] === IMAGETYPE_PNG) {
-                $picture = imagecreatefrompng($file);
-            }   else if (getimagesize($file)[2] === IMAGETYPE_JPEG) {
-                $picture = imagecreatefromjpeg($file);
-            }
+                try {
 
-            if (!empty($img_obj->stickers)) {
-                foreach ($img_obj->stickers as $sticker) {
-                    $size = in_array($sticker->name, $faces) ? 300 : 100;
-                    $sticker->x = round((float)($sticker->x * $size) / (float)$sticker->width, PHP_ROUND_HALF_UP);
-                    $sticker->y = round((float)($sticker->y * $size / (float)$sticker->height), PHP_ROUND_HALF_UP);
-                    $sticker_img = imagecreatefrompng(PUBLIC_PATH . 'img/Stickers/' . $sticker->name);
-                    imagecopy($picture, $sticker_img, $sticker->x, $sticker->y, 0, 0, $size, $size);
+                    file_put_contents($file, base64_decode($uri));
+                    $watermark = imagecreatefrompng(PUBLIC_PATH . 'img/pic_watermark.png');
+                    if (getimagesize($file)[2] === IMAGETYPE_PNG) {
+                        $picture = imagecreatefrompng($file);
+                    } else if (getimagesize($file)[2] === IMAGETYPE_JPEG) {
+                        $picture = imagecreatefromjpeg($file);
+                    }
+
+                    if (!empty($img_obj->stickers)) {
+                        foreach ($img_obj->stickers as $sticker) {
+                            $size = in_array($sticker->name, $faces) ? 300 : 100;
+                            $sticker->x = round((float)($sticker->x * $size) / (float)$sticker->width, PHP_ROUND_HALF_UP);
+                            $sticker->y = round((float)($sticker->y * $size / (float)$sticker->height), PHP_ROUND_HALF_UP);
+                            $sticker_img = imagecreatefrompng(PUBLIC_PATH . 'img/Stickers/' . $sticker->name);
+                            imagecopy($picture, $sticker_img, $sticker->x, $sticker->y, 0, 0, $size, $size);
+                        }
+                    }
+                    imagecopy($picture, $watermark, 245, 420, 0, 0, 150, 24);
+
+                    if (!imagepng($picture, $file, 9, PNG_ALL_FILTERS)) {
+                        echo 'there was some problem with this picture !';
+                    }
+                    else {
+                        imagedestroy($picture);
+                        $this->picturesModel->storeImg($data);
+                    }
+
+                }   catch (Exception $e) {
+
+                    $err_msg = $e->getMessage();
                 }
-            }
-            imagecopy($picture, $watermark, 245, 420, 0, 0, 150, 24);
 
-            imagepng($picture, $file, 9, PNG_ALL_FILTERS);
-            imagedestroy($picture);
+            }   else {
+
+                $err_msg = 'You fucker didn\'t upload an image didn\'t you ?';
+            }
+
 
             $data['user'] = $_SESSION['user'];
             $data['path'] = $name;
-            if ($this->picturesModel->storeImg($data)) {
-                $paths = $this->getPics();
-                foreach ($paths as &$path) {
-                    $path = URL_ROOT . 'img/Users_pics/' . $path;
-                }
-                echo json_encode($paths);
+            $paths = $this->getPics();
+            foreach ($paths as &$path) {
+                $path = URL_ROOT . 'img/Users_pics/' . $path;
             }
+            echo empty($err_msg)
+                ? json_encode($paths)
+                : json_encode(
+                    [
+                        'paths' => $paths,
+                        'err' => $err_msg
+                    ]
+                );
 
         }
 
         public function deletePic() {
             $pic = $_POST['pic'];
             if ($this->picturesModel->removeImg($pic)) {
-                echo json_encode($this->getPics());
+                $paths = $this->getPics();
+                foreach ($paths as &$path) {
+                    $path = URL_ROOT . 'img/Users_pics/' . $path;
+                }
+                echo json_encode($paths);
             }
         }
 

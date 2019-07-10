@@ -4,6 +4,8 @@
                 <form action="<?php echo URL_ROOT; ?>users/login" method="post">
                     <img id="logo" src="<?php echo URL_ROOT; ?>img/logo.png">
 
+                    <span style="display: block;"><?php echo $data['msg']; ?></span>
+
                     <div class="inp-grp">
                         <input class="inp username" type="text" name="username" placeholder="username" value="<?php echo $data['username']; ?>">
                         <span class="err username"><?php echo $data['username_err']; ?></span>
