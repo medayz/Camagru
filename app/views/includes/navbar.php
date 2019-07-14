@@ -2,11 +2,10 @@
     <a href="<?php echo URL_ROOT; ?>home"><img id="logo_nav" style="display: inline-block;" src="<?php echo URL_ROOT; ?>img/logo.png"></a>
 
     <div id="menu-btn">
-<!--        <img src="--><?php //echo URL_ROOT . 'img/Icons/menu.svg';?><!--" alt="menu">-->
     </div>
 
     <a
-            href="<?php echo !empty($_SESSION['user']) ? URL_ROOT . "home/logOut" : URL_ROOT . "signin"; ?>"
+            href="<?php echo !empty($_SESSION['user']) ? URL_ROOT . "users/logOut" : URL_ROOT . "users/signin"; ?>"
     >
         <button id="btn" style="font-size: 10pt; padding: 0; width: 100px; height: 28px; margin: 10px 20px !important; float: right;">
             <?php echo !empty($_SESSION['user']) ? "Log Out" : "Log in" ?>
@@ -28,4 +27,27 @@
             <a class="menu-link<?php echo $data['page'] === 'Password' ? ' active' : ''; ?>" href="<?php echo URL_ROOT?>users/changePassword">Password</a>
         </li>
     </ul>
+    <script>
+        const   menu_btn = document.querySelector("#menu-btn");
+        const   menu = document.querySelector(".menu");
+
+        document.addEventListener('scroll', function() {
+            document.querySelector("#navbar").style.backgroundColor = "rgba(45, 48, 71, 1)";
+        });
+        menu_btn.addEventListener('click', function () {
+            if (menu.style.display === "none") {
+                menu.style.display = "block";
+            }   else {
+                menu.style.display = "none";
+            }
+        });
+
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 800) {
+                menu.style.display = "inline";
+            }   else {
+                menu.style.display = "none";
+            }
+        });
+    </script>
 </div>

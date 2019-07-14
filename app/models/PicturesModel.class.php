@@ -92,9 +92,9 @@ class PicturesModel
     }
 
     public function getPic($pic) {
-        $this->db->query("SELECT * FROM `pics` WHERE `pic_path`=:pic");
+        $this->db->query("SELECT * FROM `pics` WHERE `path`=:pic");
         $this->db->bind(':pic', $pic);
-        return $this->db->getAllRows();
+        return $this->db->getRow();
     }
 
     public function getPicOwner($pic) {

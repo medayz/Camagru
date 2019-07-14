@@ -27,5 +27,6 @@
                 </form>
             </div>
         </div>
+    <script src="<?php echo URL_ROOT; ?>js/forms.js"></script>
     <script src="<?php echo URL_ROOT . 'js/edit.js'; ?>"></script>
 <?php require APP_PATH . 'views/includes/footer.php'; ?>

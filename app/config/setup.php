@@ -41,7 +41,8 @@ try {
         $dbh->exec(
             "CREATE TABLE IF NOT EXISTS `pics` (
              `path` varchar(40) NOT NULL PRIMARY KEY,
-             `user` varchar(20) NOT NULL
+             `user` varchar(20) NOT NULL,
+              CONSTRAINT `user_pics_casc` FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON UPDATE CASCADE
            ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
          ");
         echo "PICTURES TABLE CREATED!";

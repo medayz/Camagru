@@ -118,7 +118,7 @@ class UserModel {
     }
 
     public function editEmail($data) {
-        $this->db->query('UPDATE `users` SET `email`= :email WHERE `username` = :user');
+        $this->db->query('UPDATE `users` SET `email`= :email, active = 0 WHERE `username` = :user');
         $this->db->bind(':user', $data['username']);
         $this->db->bind(':email', $data['email']);
 
@@ -141,12 +141,18 @@ class UserModel {
         $this->db->execute();
     }
 
+    private function isActive($user) {
+        return  $this->getUser($user)->active;
+    }
+
     public  function connect($data) {
-        if (($err_msg = $this->checkUser($data['username'], $data['pwd'])) === "Success") {
-//            $_SESSION['user'] = $data['username'];
+        if (($err_msg = $this->checkUser($data['username'], $data['pwd'])) === "Success"
+            && $this->isActive($data['username'])) {
             return "OK!";
         }   else {
-            return  $err_msg;
+            return  ($err_msg === 'Success')
+                ? 'This account is not activated, go to your mailbox and click the fucking link we sent you!'
+                : $err_msg;
         }
     }
 }

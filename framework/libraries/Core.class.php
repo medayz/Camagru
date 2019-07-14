@@ -13,6 +13,9 @@ class Core {
         if (file_exists('../app/controllers/' . ucwords($url[0]) . 'Controller.class.php')) {
             $this->currentController = ucwords($url[0]) . 'Controller';
             unset($url[0]);
+        }   else if (!empty($url[0])) {
+            require APP_PATH . 'views/pages/404.php';
+            exit(0);
         }
 
         require_once '../app/controllers/' . $this->currentController . '.class.php';

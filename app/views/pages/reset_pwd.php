@@ -20,4 +20,5 @@
                 </form>
             </div>
         </div>
+        <script src="<?php echo URL_ROOT; ?>js/forms.js"></script>
 <?php require APP_PATH . 'views/includes/footer.php'; ?>

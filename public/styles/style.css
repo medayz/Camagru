@@ -60,11 +60,11 @@ img#logo_nav {
     width: 28px;
     margin: 10px 40px 10px 10px;
     float: right;
-    background: url("http://localhost/camagru/img/Icons/menu.svg");
+    background: url("../img/Icons/menu.svg");
     background-size: cover;
 }
 #menu-btn:hover {
-    background: url("http://localhost/camagru/img/Icons/menu-hover.svg");
+    background: url("../img/Icons/menu-hover.svg");
     background-size: cover;
     cursor: pointer;
 }
@@ -197,17 +197,17 @@ img#logo {
 }
 
 #notif.inactive {
-    background: url("http://localhost/camagru/img/Icons/notif.svg");
+    background: url("../img/Icons/notif.svg");
     background-size: cover;
 }
 
 #notif.inactive:hover {
-    background: url("http://localhost/camagru/img/Icons/notif-hover.svg");
+    background: url("../img/Icons/notif-hover.svg");
     background-size: cover;
 }
 
 #notif.active {
-    background: url("http://localhost/camagru/img/Icons/notif-active.svg");
+    background: url("../img/Icons/notif-active.svg");
     background-size: cover;
 }
 
@@ -232,7 +232,7 @@ img#logo {
     right: 5%;
     width: 15px;
     height: 15px;
-    background: url("http://localhost/camagru/img/Icons/cancel.svg");
+    background: url("../img/Icons/cancel.svg");
     background-size: cover;
 }
 #cancel:hover {
@@ -253,7 +253,7 @@ img#logo {
     margin: auto;
 }
 #post-img {
-    background: #F8FA9A url("http://localhost/camagru/img/Users_pics/hamid_15605361432001.png") no-repeat;
+    background: #F8FA9A url("../img/Users_pics/hamid_15605361432001.png") no-repeat;
     background-size: contain;
     background-position: center 20px;
     border-radius: 8px 8px 0 0;
@@ -280,7 +280,7 @@ img#logo {
     text-decoration: underline;
 }
 #big-like {
-    background: url("http://localhost/camagru/img/Icons/like-hover.svg");
+    background: url("../img/Icons/like-hover.svg");
     background-size: cover;
     width: 50px;
     height: 50px;
@@ -302,7 +302,7 @@ img#logo {
     right: 10px;
     width: 20px;
     height: 20px;
-    background: url("http://localhost/camagru/img/Icons/delete.svg");
+    background: url("../img/Icons/delete.svg");
     background-size: cover;
 }
 .delete:hover {
@@ -316,7 +316,7 @@ img#logo {
     position: relative;
     top: 0;
     right: 0;
-    background: url("http://localhost/camagru/img/Icons/delete-com.svg");
+    background: url("../img/Icons/delete-com.svg");
     background-size: cover;
 }
 #comment-div {
@@ -509,29 +509,29 @@ div.pic.gallery:hover .over-img{
     /*transform: scaleX(-1);*/
 }
 .like {
-    background: url("http://localhost/camagru/img/Icons/like.svg");
+    background: url("../img/Icons/like.svg");
     background-size: cover;
 }
 .comments {
-    background: url("http://localhost/camagru/img/Icons/comment.svg");
+    background: url("../img/Icons/comment.svg");
     background-size: cover;
 }
 .liked {
-    background: url("http://localhost/camagru/img/Icons/liked.svg");
+    background: url("../img/Icons/liked.svg");
     background-size: cover;
 }
 .commented {
-    background: url("http://localhost/camagru/img/Icons/commented.svg");
+    background: url("../img/Icons/commented.svg");
     background-size: cover;
 }
 .like:hover {
     transform: scale(1.2);
-    background: url("http://localhost/camagru/img/Icons/like-hover.svg");
+    background: url("../img/Icons/like-hover.svg");
     background-size: cover;
 }
 .comments:hover {
     transform: scale(1.2);
-    background: url("http://localhost/camagru/img/Icons/comment-hover.svg");
+    background: url("../img/Icons/comment-hover.svg");
     background-size: cover;
 }
 .commented:hover {
@@ -739,7 +739,7 @@ div#video {
     position: relative;
     display: inline;
     float: left;
-    background: #F8FA9A url("http://localhost/camagru/img/Icons/upload.svg") center no-repeat;
+    background: #F8FA9A url("../img/Icons/upload.svg") center no-repeat;
     background-size: 20px 20px;
     padding: 0;
     height: 40px;
@@ -748,7 +748,7 @@ div#video {
     border-radius: 4px;
 }
 #upload-pic:hover {
-    background: #F7F052 url("http://localhost/camagru/img/Icons/upload.svg") center no-repeat;
+    background: #F7F052 url("../img/Icons/upload.svg") center no-repeat;
     background-size: 20px 20px;
 }
 input[type="file"] {
@@ -783,7 +783,7 @@ video {
 /*******************
 **  MEDIA QUERIES
 *******************/
-@media screen and (max-width: 1450px) {
+@media only screen and (max-width: 1450px) {
     div.pics, div#flex-container {
         width: 960px;
     }
@@ -792,7 +792,7 @@ video {
     }
 }
 
-@media screen and (max-width: 1050px) {
+@media only screen and (max-width: 1050px) {
     div.pics, div#flex-container {
         width: 650px;
     }
@@ -819,7 +819,7 @@ video {
     }
 }
 
-@media screen and (max-width: 800px) {
+@media only screen and (max-width: 800px) {
     #post-img {
         background-position: center;
     }
@@ -893,7 +893,7 @@ video {
     }
 }
 
-@media screen and (max-width: 740px) {
+@media only screen and (max-width: 740px) {
     div.pics {
         /*grid-template-columns: 1fr;*/
         width: 350px;
@@ -940,7 +940,7 @@ video {
     }
 }
 
-@media screen and (max-width: 400px) {
+@media only screen and (max-width: 400px) {
     div.pics, div#flex-container {
         width: 90%;
     }

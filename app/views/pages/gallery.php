@@ -24,5 +24,6 @@
                 </div>
             </div>
         </div>
+        <script src="<?php echo URL_ROOT; ?>js/gallery.js"></script>
 <?php require APP_PATH . 'views/includes/logo_footer.php'; ?>
 <?php require APP_PATH . 'views/includes/footer.php'; ?>
